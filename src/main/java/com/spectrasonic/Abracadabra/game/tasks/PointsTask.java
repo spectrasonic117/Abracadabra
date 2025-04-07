@@ -32,13 +32,16 @@ public class PointsTask extends BukkitRunnable {
             if (plugin.getGameManager().isInZone(player.getLocation())) {
                 playersInZone++;
                 pointsManager.addPoints(player, 1);
-                MessageUtils.sendActionBar(player, "<green>+1 punto por estar en la zona</green>");
+                MessageUtils.sendActionBar(player, "<green><b>+1 Punto</green>");
                 SoundUtils.playerSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1.0f);
+
+        Bukkit.getScheduler().runTaskLater(plugin, () ->
+            MessageUtils.sendActionBar(player, ""), 20L);
             }
         }
 
-        if (playersInZone > 0) {
-            MessageUtils.sendConsoleMessage("<yellow>Hay " + playersInZone + " jugadores en la zona recibiendo puntos.</yellow>");
-        }
+        // if (playersInZone > 0) {
+        //     MessageUtils.sendConsoleMessage("<yellow>Hay " + playersInZone + " jugadores en la zona recibiendo puntos.</yellow>");
+        // }
     }
 }

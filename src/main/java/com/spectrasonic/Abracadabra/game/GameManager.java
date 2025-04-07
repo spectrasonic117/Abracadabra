@@ -74,8 +74,8 @@ public class GameManager {
         particleTask = new ParticleTask(plugin);
         particleTask.runTaskTimer(plugin, 0L, 5L);
         
-        MessageUtils.broadcastTitle("<gold>¡Abracadabra!</gold>", "<yellow>¡El juego ha comenzado!</yellow>", 1, 3, 1);
-        MessageUtils.sendBroadcastMessage("<gold>¡El juego ha comenzado! Mantente en la zona para ganar puntos.</gold>");
+        // MessageUtils.broadcastTitle("<gold>¡Abracadabra!</gold>", "<yellow>¡El juego ha comenzado!</yellow>", 1, 3, 1);
+        // MessageUtils.sendBroadcastMessage("<gold>¡El juego ha comenzado! Mantente en la zona para ganar puntos.</gold>");
         SoundUtils.broadcastPlayerSound(Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
     }
     
@@ -104,8 +104,8 @@ public class GameManager {
         
         participants.clear();
         
-        MessageUtils.broadcastTitle("<red>¡Fin del juego!</red>", "<yellow>El juego ha terminado</yellow>", 1, 3, 1);
-        MessageUtils.sendBroadcastMessage("<red>¡El juego ha terminado!</red>");
+        // MessageUtils.broadcastTitle("<red>¡Fin del juego!</red>", "<yellow>El juego ha terminado</yellow>", 1, 3, 1);
+        // MessageUtils.sendBroadcastMessage("<red>¡El juego ha terminado!</red>");
         SoundUtils.broadcastPlayerSound(Sound.ENTITY_WITHER_DEATH, 1.0f, 1.0f);
     }
     
@@ -113,9 +113,8 @@ public class GameManager {
         ItemStack weapon = ItemBuilder.setMaterial("PAPER")
                 .setName("<red><b>Lanzagranadas</b></red>")
                 .setLore(
-                        "<gray>Un arma poderosa que dispara cargas ígneas",
+                        "<gray>Dispara cargas ígneas",
                         "<gray>capaces de empujar a tus enemigos",
-                        "<gray>fuera de la zona de control.",
                         "",
                         "<yellow>Click derecho para disparar</yellow>"
                 )
