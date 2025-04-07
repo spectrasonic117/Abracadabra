@@ -1,0 +1,5 @@
+name: Abracadabra
+version: '${version}'
+main: com.spectrasonic.Abracadabra.Main
+api-version: '1.21'
+authors: [Spectrasonic]
