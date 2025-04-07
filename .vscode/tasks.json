@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "gradle",
+            "id": "/Users/spectra/Desktop/AbracadabrabuildAbracadabra",
+            "script": "build",
+            "description": "Assembles and tests this project.",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "project": "Abracadabra",
+            "buildFile": "/Users/spectra/Desktop/Abracadabra/build.gradle",
+            "rootProject": "Abracadabra",
+            "projectFolder": "/Users/spectra/Desktop/Abracadabra",
+            "workspaceFolder": "/Users/spectra/Desktop/Abracadabra",
+            "args": "",
+            "javaDebug": false,
+            "problemMatcher": [
+                "$gradle"
+            ],
+            "label": "gradle: build"
+        }
+    ]
+}
