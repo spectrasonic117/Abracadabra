@@ -1,5 +1,16 @@
 name: Abracadabra
-version: '${version}'
+version: "${version}"
 main: com.spectrasonic.Abracadabra.Main
-api-version: '1.21'
+api-version: "1.21"
 authors: [Spectrasonic]
+
+commands:
+    abracadabra:
+        aliases: [abra]
+        description: Comandos principales para Abracadabra.
+        permission: abracadabra.admin
+
+permissions:
+    abracadabra.admin:
+        description: Permisos administrativos para controlar el plugin
+        default: op
