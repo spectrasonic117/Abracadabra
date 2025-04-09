@@ -5,6 +5,7 @@ import com.spectrasonic.Abracadabra.Utils.MessageUtils;
 import com.spectrasonic.Abracadabra.Utils.PointsManager;
 import com.spectrasonic.Abracadabra.Utils.SoundUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,12 +29,15 @@ public class PointsTask extends BukkitRunnable {
 
         int playersInZone = 0;
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
+        for (Player player : plugin.getGameManager().getParticipants()) {
+            if (player.getGameMode() != GameMode.ADVENTURE) {
+                continue;
+            }
             if (plugin.getGameManager().isInZone(player.getLocation())) {
                 playersInZone++;
                 pointsManager.addPoints(player, 1);
                 MessageUtils.sendActionBar(player, "<green><b>+1 Punto</green>");
-                SoundUtils.playerSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1.0f);
+                SoundUtils.playerSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 0.6f);
 
         Bukkit.getScheduler().runTaskLater(plugin, () ->
             MessageUtils.sendActionBar(player, ""), 20L);

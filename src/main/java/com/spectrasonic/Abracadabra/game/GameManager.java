@@ -4,6 +4,7 @@ import com.spectrasonic.Abracadabra.Main;
 import com.spectrasonic.Abracadabra.Utils.ItemBuilder;
 import com.spectrasonic.Abracadabra.Utils.MessageUtils;
 import com.spectrasonic.Abracadabra.Utils.SoundUtils;
+import com.spectrasonic.Abracadabra.game.tasks.LavaWatchdogTask;
 import com.spectrasonic.Abracadabra.game.tasks.ParticleTask;
 import com.spectrasonic.Abracadabra.game.tasks.PointsTask;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class GameManager {
     private int height;
     private PointsTask pointsTask;
     private ParticleTask particleTask;
+    private LavaWatchdogTask lavaWatchdogTask;
     private final Set<Player> participants = new HashSet<>();
     
     public GameManager(Main plugin) {
@@ -74,9 +76,12 @@ public class GameManager {
         particleTask = new ParticleTask(plugin);
         particleTask.runTaskTimer(plugin, 0L, 5L);
         
+        lavaWatchdogTask = new LavaWatchdogTask(plugin);
+        lavaWatchdogTask.runTaskTimer(plugin, 0L, 20L);
+
         // MessageUtils.broadcastTitle("<gold>¡Abracadabra!</gold>", "<yellow>¡El juego ha comenzado!</yellow>", 1, 3, 1);
         // MessageUtils.sendBroadcastMessage("<gold>¡El juego ha comenzado! Mantente en la zona para ganar puntos.</gold>");
-        SoundUtils.broadcastPlayerSound(Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
+        // SoundUtils.broadcastPlayerSound(Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
     }
     
     public void stopGame() {
@@ -96,6 +101,11 @@ public class GameManager {
             particleTask = null;
         }
         
+        if (lavaWatchdogTask != null) {
+            lavaWatchdogTask.cancel();
+            lavaWatchdogTask = null;
+        }
+
         for (Player player : participants) {
             if (player.isOnline()) {
                 player.getInventory().clear();
@@ -106,7 +116,7 @@ public class GameManager {
         
         // MessageUtils.broadcastTitle("<red>¡Fin del juego!</red>", "<yellow>El juego ha terminado</yellow>", 1, 3, 1);
         // MessageUtils.sendBroadcastMessage("<red>¡El juego ha terminado!</red>");
-        SoundUtils.broadcastPlayerSound(Sound.ENTITY_WITHER_DEATH, 1.0f, 1.0f);
+        // SoundUtils.broadcastPlayerSound(Sound.ENTITY_WITHER_DEATH, 1.0f, 1.0f);
     }
     
     public void giveWeapon(Player player) {
