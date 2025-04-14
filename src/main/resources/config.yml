@@ -2,3 +2,12 @@ points_zone:
     point: { x: -1956, y: -2, z: -9366 }
     radius: 31
     height: 5
+
+respawn_pont:
+    x: -1956
+    y: 0
+    z: -9366
+
+weapon:
+    knockback_radius: 2.0
+    knockback_power: 3.0

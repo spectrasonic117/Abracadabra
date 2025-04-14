@@ -46,7 +46,7 @@ public class WeaponListener implements Listener {
         }
         
         ItemMeta meta = item.getItemMeta();
-        if (meta == null || !meta.hasCustomModelData() || meta.getCustomModelData() != 1) {
+        if (meta == null || !meta.hasCustomModelData() || meta.getCustomModelData() != 1124) {
             return;
         }
         
@@ -56,7 +56,7 @@ public class WeaponListener implements Listener {
     
     private void fireWeapon(Player player) {
         if (player.getCooldown(Material.PAPER) > 0) {
-            MessageUtils.sendActionBar(player, "<red><b>Recargando Arma");
+            MessageUtils.sendActionBar(player, "<red><b>Recargando Mágia");
             return;
         }
         
@@ -70,6 +70,7 @@ public class WeaponListener implements Listener {
 
         player.setCooldown(Material.PAPER, 20);
     }
+
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
         if (!(event.getEntity() instanceof Fireball)) {
@@ -84,9 +85,9 @@ public class WeaponListener implements Listener {
         impactLocation.getWorld().spawnParticle(Particle.FLAME, impactLocation, 30, 1, 1, 1, 0.2);
         impactLocation.getWorld().playSound(impactLocation, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
 
-        double radius = 5.0;
-        double power = 2.0;
-
+        double radius = plugin.getConfig().getDouble("weapon.knockback_radius", 7.0);
+        double power = plugin.getConfig().getDouble("weapon.knockback_power", 4.0);
+        
         for (Entity entity : impactLocation.getWorld().getNearbyEntities(impactLocation, radius, radius, radius)) {
             if (entity instanceof Player) {
                 Player target = (Player) entity;
@@ -95,7 +96,7 @@ public class WeaponListener implements Listener {
 
                 if (pushVector.length() > 0) {
                     pushVector.normalize().multiply(power);
-                    pushVector.setY(0.5);
+                    pushVector.setY(0.7);
 
                     target.setVelocity(pushVector);
                 }

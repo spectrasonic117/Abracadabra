@@ -33,4 +33,12 @@ public class ConfigManager {
             this.centerPoint = new Location(world, x, y, z);
         }
     }
+
+    public Location getRespawnPoint() {
+        double x = plugin.getConfig().getDouble("respawn_pont.x");
+        double y = plugin.getConfig().getDouble("respawn_pont.y");
+        double z = plugin.getConfig().getDouble("respawn_pont.z");
+        World world = plugin.getServer().getWorlds().get(0);
+        return new Location(world, x, y, z);
+    }
 }

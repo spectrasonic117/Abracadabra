@@ -3,7 +3,6 @@ package com.spectrasonic.Abracadabra.game;
 import com.spectrasonic.Abracadabra.Main;
 import com.spectrasonic.Abracadabra.Utils.ItemBuilder;
 import com.spectrasonic.Abracadabra.Utils.MessageUtils;
-import com.spectrasonic.Abracadabra.Utils.SoundUtils;
 import com.spectrasonic.Abracadabra.game.tasks.LavaWatchdogTask;
 import com.spectrasonic.Abracadabra.game.tasks.ParticleTask;
 import com.spectrasonic.Abracadabra.game.tasks.PointsTask;
@@ -11,7 +10,6 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -85,33 +83,26 @@ public class GameManager {
     }
     
     public void stopGame() {
-        if (!isGameRunning()) {
-            return;
-        }
-        
+        if (gameState == GameState.STOPPED) return;
         gameState = GameState.STOPPED;
         
-        if (pointsTask != null) {
-            pointsTask.cancel();
-            pointsTask = null;
-        }
-        
-        if (particleTask != null) {
-            particleTask.cancel();
-            particleTask = null;
-        }
-        
-        if (lavaWatchdogTask != null) {
-            lavaWatchdogTask.cancel();
-            lavaWatchdogTask = null;
-        }
+        if (pointsTask != null) pointsTask.cancel();
+        if (particleTask != null) particleTask.cancel();
+        if (lavaWatchdogTask != null) lavaWatchdogTask.cancel();
+
+        Location respawnLoc = plugin.getConfigManager().getRespawnPoint();
 
         for (Player player : participants) {
-            if (player.isOnline()) {
+            if (!player.isOnline()) continue;
+            if (player.getGameMode() == GameMode.SPECTATOR) {
+                player.setGameMode(GameMode.ADVENTURE);
+                player.teleport(respawnLoc);
+                player.getInventory().clear();
+            }
+                else if (player.getGameMode() == GameMode.ADVENTURE) {
                 player.getInventory().clear();
             }
         }
-        
         participants.clear();
         
         // MessageUtils.broadcastTitle("<red>¡Fin del juego!</red>", "<yellow>El juego ha terminado</yellow>", 1, 3, 1);
@@ -120,18 +111,18 @@ public class GameManager {
     }
     
     public void giveWeapon(Player player) {
-        ItemStack weapon = ItemBuilder.setMaterial("PAPER")
-                .setName("<red><b>Lanzagranadas</b></red>")
+        ItemStack Weapon = ItemBuilder.setMaterial("PAPER")
+                .setName("<red><b>Varita Magica</b></red>")
                 .setLore(
-                        "<gray>Dispara cargas ígneas",
-                        "<gray>capaces de empujar a tus enemigos",
+                        "<gray>Dispara la magia",
+                        "<gray>capaz de empujar a tus enemigos",
                         "",
                         "<yellow>Click derecho para disparar</yellow>"
                 )
-                .setCustomModelData(1)
+                .setCustomModelData(1124)
                 .build();
         
-        player.getInventory().addItem(weapon);
+        player.getInventory().addItem(Weapon);
     }
     
     public boolean isInZone(Location loc) {
