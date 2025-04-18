@@ -31,7 +31,7 @@ public class AbracadabraCommand extends BaseCommand {
                 plugin.getGameManager().startGame();
                 MessageUtils.sendMessage(sender, "<green>¡Juego Iniciado!</green>");
                 Player playerStart = (Player) sender;
-                playerStart.performCommand("di false");
+                playerStart.performCommand("id false");
                 playerStart.performCommand("gamerule keepInventory true");
                 break;
             case "stop":
@@ -42,7 +42,7 @@ public class AbracadabraCommand extends BaseCommand {
                 plugin.getGameManager().stopGame();
                 MessageUtils.sendMessage(sender, "<red>Juego Detenido");
                 Player playerStop = (Player) sender;
-                playerStop.performCommand("di true");
+                playerStop.performCommand("id true");
                 playerStop.performCommand("gamerule keepInventory false");
                 break;
             default:
