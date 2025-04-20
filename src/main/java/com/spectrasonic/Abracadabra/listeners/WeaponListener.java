@@ -78,6 +78,10 @@ public class WeaponListener implements Listener {
 
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
+        
+        if (!plugin.getGameManager().isGameRunning()) {
+            return;
+        }
         if (!(event.getEntity() instanceof Snowball)) {
             return;
         }
