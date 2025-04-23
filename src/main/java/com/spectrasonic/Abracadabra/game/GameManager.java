@@ -12,6 +12,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -65,6 +67,7 @@ public class GameManager {
             if (player.getGameMode() == GameMode.ADVENTURE) {
                 giveWeapon(player);
                 participants.add(player);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0, false, false));
             }
         }
         
@@ -94,6 +97,8 @@ public class GameManager {
 
         for (Player player : participants) {
             if (!player.isOnline()) continue;
+            player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
+            player.setFireTicks(0); // Asegura que no se queden quemando al finalizar
             if (player.getGameMode() == GameMode.SPECTATOR) {
                 player.setGameMode(GameMode.ADVENTURE);
                 player.teleport(respawnLoc);

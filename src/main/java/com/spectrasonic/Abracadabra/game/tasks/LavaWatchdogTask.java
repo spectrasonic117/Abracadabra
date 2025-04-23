@@ -2,6 +2,7 @@ package com.spectrasonic.Abracadabra.game.tasks;
 
 import com.spectrasonic.Abracadabra.Main;
 import com.spectrasonic.Abracadabra.Utils.PointsManager;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,7 +33,9 @@ public class LavaWatchdogTask extends BukkitRunnable {
 
             Material below = player.getLocation().clone().subtract(0,1,0).getBlock().getType();
             if (below == Material.LAVA || below.name().contains("LAVA")) {
-                player.setGameMode(GameMode.SPECTATOR);
+                //player.setGameMode(GameMode.SPECTATOR);
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "multiwarp tp 3_10 " + player.getName());
+                player.setFireTicks(0); // Apaga el fuego inmediatamente
                 pointsManager.subtractPoints(player, 10);
             }
         }
