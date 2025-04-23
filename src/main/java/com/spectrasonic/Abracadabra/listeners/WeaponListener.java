@@ -78,7 +78,7 @@ public class WeaponListener implements Listener {
 
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
-        
+
         if (!plugin.getGameManager().isGameRunning()) {
             return;
         }
