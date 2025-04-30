@@ -64,6 +64,12 @@ public class GameManager {
         
         gameState = GameState.RUNNING;
         
+        // Execute itemdrop false command as the player who initiated the command
+        Player initiator = plugin.getServer().getPlayer(plugin.getConfig().getString("initiator_player", ""));
+        if (initiator != null) {
+            initiator.performCommand("itemdrop false");
+        }
+        
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.getGameMode() == GameMode.ADVENTURE) {
                 giveWeapon(player);
@@ -89,6 +95,12 @@ public class GameManager {
     public void stopGame() {
         if (gameState == GameState.STOPPED) return;
         gameState = GameState.STOPPED;
+        
+        // Execute itemdrop true command as the player who initiated the command
+        Player initiator = plugin.getServer().getPlayer(plugin.getConfig().getString("initiator_player", ""));
+        if (initiator != null) {
+            initiator.performCommand("itemdrop true");
+        }
         
         // Clean up magia tagged entities
         Bukkit.getWorlds().forEach(world -> {
