@@ -11,3 +11,5 @@ respawn_pont:
 weapon:
     knockback_radius: 2.0
     knockback_power: 3.0
+
+game_stop_teleport: { x: -1955.5, y: 2, z: -9365.5 }

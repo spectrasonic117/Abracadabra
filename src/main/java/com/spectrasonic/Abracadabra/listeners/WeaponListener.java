@@ -30,6 +30,7 @@ public class WeaponListener implements Listener {
     private final Main plugin;
     // Track Snowball -> ItemDisplay
     private final Map<Snowball, ItemDisplay> snowballDisplays = new WeakHashMap<>();
+    private static final String MAGIA_TAG = "magia";
 
     public WeaponListener(Main plugin) {
         this.plugin = plugin;
@@ -160,6 +161,7 @@ public class WeaponListener implements Listener {
                     snowball.getLocation(),
                     EntityType.ITEM_DISPLAY);
             itemDisplay.setItemStack(displayItem);
+            itemDisplay.addScoreboardTag(MAGIA_TAG);
 
             // Get the shooter and apply rotation if it's a player
             if (snowball.getShooter() instanceof Player) {

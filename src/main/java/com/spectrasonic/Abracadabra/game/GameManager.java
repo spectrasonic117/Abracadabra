@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.entity.Entity;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -89,30 +90,35 @@ public class GameManager {
         if (gameState == GameState.STOPPED) return;
         gameState = GameState.STOPPED;
         
+        // Clean up magia tagged entities
+        Bukkit.getWorlds().forEach(world -> {
+            world.getEntities().stream()
+                .filter(entity -> entity.getScoreboardTags().contains("magia"))
+                .forEach(Entity::remove);
+        });
+        
         if (pointsTask != null) pointsTask.cancel();
         if (particleTask != null) particleTask.cancel();
         if (lavaWatchdogTask != null) lavaWatchdogTask.cancel();
 
-        Location respawnLoc = plugin.getConfigManager().getRespawnPoint();
+        Location gameStopLoc = plugin.getConfigManager().getGameStopTeleport();
 
         for (Player player : participants) {
             if (!player.isOnline()) continue;
             player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
-            player.setFireTicks(0); // Asegura que no se queden quemando al finalizar
+            player.setFireTicks(0);
+            
             if (player.getGameMode() == GameMode.SPECTATOR) {
                 player.setGameMode(GameMode.ADVENTURE);
-                player.teleport(respawnLoc);
+                player.teleport(gameStopLoc);
                 player.getInventory().clear();
-            }
-                else if (player.getGameMode() == GameMode.ADVENTURE) {
+            } else if (player.getGameMode() == GameMode.ADVENTURE) {
+                player.teleport(gameStopLoc);
                 player.getInventory().clear();
             }
         }
         participants.clear();
-        
-        // MessageUtils.broadcastTitle("<red>¡Fin del juego!</red>", "<yellow>El juego ha terminado</yellow>", 1, 3, 1);
-        // MessageUtils.sendBroadcastMessage("<red>¡El juego ha terminado!</red>");
-        // SoundUtils.broadcastPlayerSound(Sound.ENTITY_WITHER_DEATH, 1.0f, 1.0f);
+
     }
     
     public void giveWeapon(Player player) {

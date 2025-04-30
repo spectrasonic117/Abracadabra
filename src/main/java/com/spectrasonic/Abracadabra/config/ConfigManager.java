@@ -4,6 +4,7 @@ import com.spectrasonic.Abracadabra.Main;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.MemorySection;
 
 @Getter
 public class ConfigManager {
@@ -40,5 +41,18 @@ public class ConfigManager {
         double z = plugin.getConfig().getDouble("respawn_pont.z");
         World world = plugin.getServer().getWorlds().get(0);
         return new Location(world, x, y, z);
+    }
+
+    public Location getGameStopTeleport() {
+        double x = plugin.getConfig().getDouble("game_stop_teleport.x");
+        double y = plugin.getConfig().getDouble("game_stop_teleport.y");
+        double z = plugin.getConfig().getDouble("game_stop_teleport.z");
+        World world = plugin.getServer().getWorlds().get(0);
+        return new Location(world, x, y, z);
+    }
+
+    public MemorySection getConfig() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getConfig'");
     }
 }
