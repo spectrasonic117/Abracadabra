@@ -13,3 +13,13 @@ weapon:
     knockback_power: 3.0
 
 game_stop_teleport: { x: -1955.5, y: 2, z: -9365.5 }
+
+add_points:
+    round_1: 10
+    round_2: 20
+    round_3: 30
+
+substract_points:
+    round_1: 5
+    round_2: 15
+    round_3: 25

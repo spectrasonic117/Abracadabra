@@ -16,37 +16,43 @@ public class AbracadabraCommand extends BaseCommand {
         this.plugin = plugin;
     }
 
-    @Subcommand("game")
+    @Subcommand("game start")
     @CommandPermission("abracadabra.admin")
-    @Description("Controla el estado del juego")
-    @Syntax("<start|stop>")
-    @CommandCompletion("start|stop")
-    public void onGame(CommandSender sender, String action) {
-        switch (action.toLowerCase()) {
-            case "start":
-                if (plugin.getGameManager().isGameRunning()) {
-                    MessageUtils.sendMessage(sender, "<red>El juego ya está en curso.</red>");
-                    return;
-                }
-                plugin.getGameManager().startGame();
-                MessageUtils.sendMessage(sender, "<green>¡Juego Iniciado!</green>");
-                Player playerStart = (Player) sender;
-                playerStart.performCommand("id false");
-                playerStart.performCommand("gamerule keepInventory true");
-                break;
-            case "stop":
-                if (!plugin.getGameManager().isGameRunning()) {
-                    MessageUtils.sendMessage(sender, "<red>El juego no está en curso.</red>");
-                    return;
-                }
-                plugin.getGameManager().stopGame();
-                MessageUtils.sendMessage(sender, "<red>Juego Detenido");
-                Player playerStop = (Player) sender;
-                playerStop.performCommand("id true");
-                playerStop.performCommand("gamerule keepInventory false");
-                break;
-            default:
-                MessageUtils.sendMessage(sender, "<red>Acción desconocida. Usa 'start' o 'stop'.</red>");
+    @Description("Inicia el juego en una ronda específica")
+    @Syntax("<round>")
+    @CommandCompletion("1|2|3")
+    public void onGameStart(CommandSender sender, @Values("1|2|3") int round) {
+        if (plugin.getGameManager().isGameRunning()) {
+            MessageUtils.sendMessage(sender, "<red>El juego ya está en curso.</red>");
+            return;
+        }
+
+        plugin.getGameManager().startGame(round);
+        MessageUtils.sendMessage(sender, "<green>¡Juego Iniciado en Ronda <white>" + round + "</white>!</green>");
+
+        if (sender instanceof Player) {
+            Player playerStart = (Player) sender;
+            playerStart.performCommand("id false");
+            playerStart.performCommand("gamerule keepInventory true");
+        }
+    }
+
+    @Subcommand("game stop")
+    @CommandPermission("abracadabra.admin")
+    @Description("Detiene el juego")
+    public void onGameStop(CommandSender sender) {
+        if (!plugin.getGameManager().isGameRunning()) {
+            MessageUtils.sendMessage(sender, "<red>El juego no está en curso.</red>");
+            return;
+        }
+
+        plugin.getGameManager().stopGame();
+        MessageUtils.sendMessage(sender, "<red>Juego Detenido</red>");
+
+        if (sender instanceof Player) {
+            Player playerStop = (Player) sender;
+            playerStop.performCommand("id true");
+            playerStop.performCommand("gamerule keepInventory false");
         }
     }
 
@@ -62,7 +68,7 @@ public class AbracadabraCommand extends BaseCommand {
     @HelpCommand
     public void onHelp(CommandSender sender) {
         MessageUtils.sendMessage(sender, "<yellow>Comandos disponibles:</yellow>");
-        MessageUtils.sendMessage(sender, "<gray>- /abracadabra game start</gray> <white>- Inicia el juego</white>");
+        MessageUtils.sendMessage(sender, "<gray>- /abracadabra game start <round></gray> <white>- Inicia el juego en una ronda específica (1, 2 o 3)</white>");
         MessageUtils.sendMessage(sender, "<gray>- /abracadabra game stop</gray> <white>- Detiene el juego</white>");
         MessageUtils.sendMessage(sender, "<gray>- /abracadabra reload</gray> <white>- Recarga la configuración</white>");
     }

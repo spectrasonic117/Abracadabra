@@ -28,6 +28,8 @@ public class PointsTask extends BukkitRunnable {
         }
 
         int playersInZone = 0;
+        int currentRound = plugin.getGameManager().getCurrentRound();
+        int pointsToAdd = plugin.getConfigManager().getAddPoints(currentRound);
 
         for (Player player : plugin.getGameManager().getParticipants()) {
             if (player.getGameMode() != GameMode.ADVENTURE) {
@@ -35,12 +37,12 @@ public class PointsTask extends BukkitRunnable {
             }
             if (plugin.getGameManager().isInZone(player.getLocation())) {
                 playersInZone++;
-                pointsManager.addPoints(player, 1);
-                MessageUtils.sendActionBar(player, "<green><b>+1 Punto</green>");
+                pointsManager.addPoints(player, pointsToAdd);
+                MessageUtils.sendActionBar(player, "<green><b>+" + pointsToAdd + " Puntos</green>");
                 SoundUtils.playerSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 0.6f);
 
-        Bukkit.getScheduler().runTaskLater(plugin, () ->
-            MessageUtils.sendActionBar(player, ""), 20L);
+                Bukkit.getScheduler().runTaskLater(plugin, () ->
+                    MessageUtils.sendActionBar(player, ""), 20L);
             }
         }
 

@@ -27,6 +27,7 @@ public class GameManager {
     private Location centerPoint;
     private int radius;
     private int height;
+    private int currentRound;
     private PointsTask pointsTask;
     private ParticleTask particleTask;
     private LavaWatchdogTask lavaWatchdogTask;
@@ -39,37 +40,37 @@ public class GameManager {
     }
     
     public void loadConfig() {
-        double x = plugin.getConfig().getDouble("points_zone.point.x");
-        double y = plugin.getConfig().getDouble("points_zone.point.y");
-        double z = plugin.getConfig().getDouble("points_zone.point.z");
-        this.radius = plugin.getConfig().getInt("points_zone.radius", 16);
-        this.height = plugin.getConfig().getInt("points_zone.height", 5);
-        
-        if (Bukkit.getWorlds().isEmpty()) {
-            MessageUtils.sendConsoleMessage("<red>No hay mundos cargados para establecer el punto central.</red>");
-            return;
-        }
-        
-        this.centerPoint = new Location(Bukkit.getWorlds().get(0), x, y, z);
+        plugin.getConfigManager().reload();
+        this.centerPoint = plugin.getConfigManager().getCenterPoint();
+        this.radius = plugin.getConfigManager().getRadius();
     }
-    
     public boolean isGameRunning() {
         return gameState == GameState.RUNNING;
     }
     
-    public void startGame() {
+    public void startGame(int round) {
         if (isGameRunning()) {
             return;
         }
         
+        if (round < 1 || round > 3) {
+            plugin.getLogger().warning("Attempted to start game with invalid round: " + round);
+            return;
+        }
+
+        this.currentRound = round;
         gameState = GameState.RUNNING;
         
+<<<<<<< HEAD
         // Execute itemdrop false command as the player who initiated the command
         Player initiator = plugin.getServer().getPlayer(plugin.getConfig().getString("initiator_player", ""));
         if (initiator != null) {
             initiator.performCommand("itemdrop false");
         }
         
+=======
+        participants.clear();
+>>>>>>> 5806f05 (✨ add round-based game start and points configuration)
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.getGameMode() == GameMode.ADVENTURE) {
                 giveWeapon(player);
@@ -77,24 +78,23 @@ public class GameManager {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0, false, false));
             }
         }
-        
+    
         pointsTask = new PointsTask(plugin);
         pointsTask.runTaskTimer(plugin, 0L, 40L);
-        
+
         particleTask = new ParticleTask(plugin);
         particleTask.runTaskTimer(plugin, 0L, 5L);
-        
+
         lavaWatchdogTask = new LavaWatchdogTask(plugin);
         lavaWatchdogTask.runTaskTimer(plugin, 0L, 20L);
 
         // MessageUtils.broadcastTitle("<gold>¡Abracadabra!</gold>", "<yellow>¡El juego ha comenzado!</yellow>", 1, 3, 1);
-        // MessageUtils.sendBroadcastMessage("<gold>¡El juego ha comenzado! Mantente en la zona para ganar puntos.</gold>");
-        // SoundUtils.broadcastPlayerSound(Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
+        // MessageUtils.sendBroadcastMessage("<gold>¡El juego de la ronda <white>" + currentRound + "</white> ha comenzado! Mantente en la zona para ganar puntos.</gold>");
     }
-    
     public void stopGame() {
         if (gameState == GameState.STOPPED) return;
         gameState = GameState.STOPPED;
+<<<<<<< HEAD
         
         // Execute itemdrop true command as the player who initiated the command
         Player initiator = plugin.getServer().getPlayer(plugin.getConfig().getString("initiator_player", ""));
@@ -103,12 +103,15 @@ public class GameManager {
         }
         
         // Clean up magia tagged entities
+=======
+
+>>>>>>> 5806f05 (✨ add round-based game start and points configuration)
         Bukkit.getWorlds().forEach(world -> {
             world.getEntities().stream()
                 .filter(entity -> entity.getScoreboardTags().contains("magia"))
                 .forEach(Entity::remove);
         });
-        
+
         if (pointsTask != null) pointsTask.cancel();
         if (particleTask != null) particleTask.cancel();
         if (lavaWatchdogTask != null) lavaWatchdogTask.cancel();
@@ -119,7 +122,7 @@ public class GameManager {
             if (!player.isOnline()) continue;
             player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
             player.setFireTicks(0);
-            
+
             if (player.getGameMode() == GameMode.SPECTATOR) {
                 player.setGameMode(GameMode.ADVENTURE);
                 player.teleport(gameStopLoc);
@@ -131,8 +134,12 @@ public class GameManager {
         }
         participants.clear();
 
+        this.currentRound = 0;
+
+        // MessageUtils.broadcastTitle("<red>Juego Detenido</red>", "<gray>La partida ha terminado.</gray>", 1, 3, 1);
+        // MessageUtils.sendBroadcastMessage("<red>El juego de Abracadabra ha sido detenido.</red>");
     }
-    
+
     public void giveWeapon(Player player) {
         ItemStack Weapon = ItemBuilder.setMaterial("PAPER")
                 .setName("<red><b>Varita Magica</b></red>")
@@ -149,15 +156,11 @@ public class GameManager {
     }
     
     public boolean isInZone(Location loc) {
-        if (centerPoint == null) return false;
-
-        double dx = loc.getX() - centerPoint.getX();
-        double dz = loc.getZ() - centerPoint.getZ();
-        if ((dx * dx + dz * dz) > (radius * radius)) {
-            return false;
+        if (centerPoint == null || loc.getWorld() == null || !loc.getWorld().equals(centerPoint.getWorld())) {
+             return false;
         }
-        
-        double dy = Math.abs(loc.getY() - centerPoint.getY());
-        return dy <= height / 2.0;
+
+        double distanceSquared = loc.distanceSquared(centerPoint);
+        return distanceSquared <= radius * radius;
     }
 }

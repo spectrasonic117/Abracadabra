@@ -4,7 +4,11 @@ import com.spectrasonic.Abracadabra.Main;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 public class ConfigManager {
@@ -12,6 +16,9 @@ public class ConfigManager {
     private final Main plugin;
     private Location centerPoint;
     private int radius;
+    private Map<Integer, Integer> addPointsConfig;
+    private Map<Integer, Integer> subtractPointsConfig;
+
 
     public ConfigManager(Main plugin) {
         this.plugin = plugin;
@@ -33,6 +40,41 @@ public class ConfigManager {
             World world = plugin.getServer().getWorlds().get(0);
             this.centerPoint = new Location(world, x, y, z);
         }
+
+        addPointsConfig = loadPointsSection("add_points");
+        subtractPointsConfig = loadPointsSection("substract_points");
+    }
+
+    private Map<Integer, Integer> loadPointsSection(String sectionName) {
+        Map<Integer, Integer> pointsMap = new HashMap<>();
+        ConfigurationSection section = plugin.getConfig().getConfigurationSection(sectionName);
+        if (section != null) {
+            for (String key : section.getKeys(false)) {
+                try {
+                    String[] parts = key.split("_");
+                    if (parts.length == 2 && parts[0].equalsIgnoreCase("round")) {
+                        int round = Integer.parseInt(parts[1]);
+                        int points = section.getInt(key);
+                        pointsMap.put(round, points);
+                    } else {
+                        plugin.getLogger().warning("Invalid key format in config section '" + sectionName + "': " + key);
+                    }
+                } catch (NumberFormatException e) {
+                    plugin.getLogger().warning("Invalid round number in config section '" + sectionName + "' key '" + key + "': " + e.getMessage());
+                }
+            }
+        } else {
+            plugin.getLogger().warning("Config section '" + sectionName + "' not found!");
+        }
+        return pointsMap;
+    }
+
+    public int getAddPoints(int round) {
+        return addPointsConfig.getOrDefault(round, 1);
+    }
+
+    public int getSubtractPoints(int round) {
+        return subtractPointsConfig.getOrDefault(round, 10);
     }
 
     public Location getRespawnPoint() {
@@ -52,7 +94,6 @@ public class ConfigManager {
     }
 
     public MemorySection getConfig() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getConfig'");
     }
 }
